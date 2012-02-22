@@ -1,0 +1,32 @@
+This is an attempt at creating a nice Sequencer for linux and JACK friendly audio apps.
+
+The software will rely extensively on QGraphicsView for display and score-editing.
+
+°°Status :
+
+  Currently, I have got basic GUI up and running, but no functionality :)
+
+°°Plans include :
+
+  °Writing aids :
+
+    - showing scales on note selection
+    - showing notes from other tracks 
+    - scripting API to enable quick writing of patterns
+
+  °Easy setup of the actual audio rendering tools
+
+    - Effortless configuration of DSSI plugins
+    - Persistence of JACK connections
+
+°°Coding philosophy / design :
+    
+    - try to keep a clean API for ease of extension
+    - should have most functionality available outside the GUI
+    - I want this to work soon, I don't need the sourcecode to be a work of high literary art
+    - contributions highly welcome, commit policy will be rather souple
+
+°°Compiling :
+
+For now, since there is not much functionality yet, you will just need a recent Qt (I use 4.8) 
+and a C++ compiler that has reasonable support of C++11 (at the moment I'm using the latest clang).
