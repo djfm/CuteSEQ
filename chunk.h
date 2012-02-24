@@ -4,39 +4,46 @@
 #include "solfege.h"
 #include "chunkscene.h"
 
-#include <set>
+#include <map>
 #include <QObject>
 
 class Track;
+class Range;
+
+
+class ChunkNote : public PhysicalNote
+{
+    int _start_pos, _end_pos;
+
+public:
+
+    ChunkNote(const QString & name, int start_pos, int end_pos, int velocity = 100, int octave = 4);
+    ChunkNote(int id, int start_pos, int end_pos, int velocity = 100, int octave = 4);
+
+    int startPos() const;
+    int endPos() const;
+
+    struct Cmp
+    {
+        bool operator()(const ChunkNote & a, const ChunkNote & b) const;
+    };
+
+    void setPos(int start, int end);
+
+};
+
+QDebug operator<<(QDebug dbg, const ChunkNote & note);
+
+typedef std::multimap<ChunkNote, Range*, ChunkNote::Cmp> ChunkNotes;
 
 class Chunk : public QObject
 {
     Q_OBJECT
 
+    friend class ChunkScene;
+
 public:
 
-    class ChunkNote : public Note
-    {
-        int _start_pos, _end_pos;
-        int _velocity;
-
-    public:
-
-        ChunkNote(const QString & name, int start_pos, int end_pos, int velocity = 100, int octave = 4);
-        ChunkNote(int id, int start_pos, int end_pos, int velocity = 100, int octave = 4);
-
-        int startPos() const;
-        int endPos() const;
-        int velocity() const;
-
-        struct Cmp
-        {
-            bool operator()(const ChunkNote & a, const ChunkNote & b) const;
-        };
-
-    };
-
-    typedef std::set<ChunkNote, ChunkNote::Cmp> ChunkNotes;
 
     Chunk(Track * track, int measures = 4, const TimingDescription & timing_description = TimingDescription(), QObject * parent = 0);
     virtual ~Chunk();
@@ -46,9 +53,11 @@ public:
     int measures() const;
     const TimingDescription & timingDescription() const;
 
-    void addNote(const ChunkNote & note, Direction dir = ModelOnly);
+    void addNote(const ChunkNote &note);
+    void removeNote(const ChunkNote & note);
 
     const ChunkNotes & notes() const;
+    ChunkNotes & notes();
 
     int lowerOctave() const;
     int upperOctave() const;
@@ -71,12 +80,20 @@ public:
 
     void updateViews();
 
+    int msPosition(int mark, int pos) const;
+
+    void setTimingDescription(const TimingDescription & timing_description);
+
+    void emitAdds();
 
 signals:
 
     void descriptionChanged();
+    void noteAdded(Chunk * chunk, const ChunkNote & note);
+    void noteRemoved(Chunk * chunk, const ChunkNote & note);
 
 private:
+
     Track * _track = 0;
     int _measures;
     TimingDescription _timing_description;

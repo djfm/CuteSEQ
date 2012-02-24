@@ -38,6 +38,7 @@ private slots:
     void on_addLowOctaveButton_clicked();
     void on_addMeasureButton_clicked();
     void on_removeMeasureButton_clicked();
+    void on_timingButton_clicked();
 
 private:
     //Ui::ChunkViewControl *ui;

@@ -75,11 +75,4 @@ public:
 
 };
 
-enum Direction
-{
-    ViewToModel,
-    ModelToView,
-    ModelOnly
-};
-
 #endif // UTIL_H

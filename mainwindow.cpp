@@ -26,28 +26,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->compositionView->installEventFilter(this);
     ui->compositionView->viewport()->installEventFilter(this);
 
-    Track * track = new Track();
+    _composition = new Composition();
+
+    Track * track = new Track(_composition);
 
     Chunk * chunk = new Chunk(track, 4);
-    chunk->addNote(Chunk::ChunkNote("C",0,15));
-    chunk->addNote(Chunk::ChunkNote("E",16,31));
-    chunk->addNote(Chunk::ChunkNote("G",32,63));
-    chunk->addNote(Chunk::ChunkNote("C",32,63), ModelToView);
+    chunk->addNote(ChunkNote("C",0,15));
+    chunk->addNote(ChunkNote("E",16,31));
+    chunk->addNote(ChunkNote("G",32,63));
+    chunk->addNote(ChunkNote("C",32,63));
 
-
-    track->setChunk(chunk);
     track->mark(0);
 
     ui->chunkViewControl->setChunk(chunk);
     ui->chunkViewControl2->setChunk(chunk);
 
-    _composition = new Composition();
-    _composition->addTrack(track);
-
-    _comp = new CompositionScene(_composition);
-    track->setComp(_comp);
-
-    ui->compositionView->setScene(_comp);
+    ui->compositionView->setScene(_composition->compositionScene());
 
 }
 
@@ -85,9 +79,6 @@ bool MainWindow::eventFilter(QObject * object, QEvent * event)
 
 void MainWindow::on_addTrackButton_clicked()
 {
-    Track * track = new Track();
+    Track * track = new Track(_composition);
     Chunk * chunk = new Chunk(track);
-    track->setChunk(chunk);
-    track->setComp(_comp);
-    _comp->addTrack(track,ViewToModel);
 }

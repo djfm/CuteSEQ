@@ -38,10 +38,12 @@ class CompositionScene : public QGraphicsScene
 
 public:
     explicit CompositionScene(Composition * composition, QObject *parent = 0);
-    void addTrack(Track *track, Direction dir);
+
+    void addTrack(Track *track);
     int trackRow(Track *track) const;
-    void mark(Track * track, int measure, Direction dir);
-    void unmark(Track * track, int measure, Direction dir);
+
+    void mark_view(Track * track, int measure);
+
     Composition *composition();
 
 signals:

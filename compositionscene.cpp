@@ -1,6 +1,7 @@
 #include "compositionscene.h"
 #include "composition.h"
 #include "chunk.h"
+#include "track.h"
 
 #include <QGraphicsRectItem>
 #include <QDebug>
@@ -10,11 +11,11 @@
 
 class ChunkHandle : public QGraphicsRectItem
 {
-    Chunk * _chunk;
+    Track * _track;
 public:
 
-    ChunkHandle(Chunk * chunk, int x, int y, int w, int h)
-        :QGraphicsRectItem(x,y,w,h), _chunk(chunk)
+    ChunkHandle(Track * track, int x, int y, int w, int h)
+        :QGraphicsRectItem(x,y,w,h), _track(track)
     {
         QBrush brush(QColor(127,127,255));
         setBrush(brush);
@@ -30,7 +31,7 @@ public:
         if(event->button() == Qt::LeftButton)
         {
             QDrag * drag = new QDrag(event->widget());
-            drag->setMimeData(new ChunkMime(_chunk));
+            drag->setMimeData(new ChunkMime(_track->chunk()));
             Qt::DropAction drop = drag->exec();
         }
     }
@@ -54,7 +55,7 @@ public:
         if(event->button() == Qt::LeftButton)
         {
             qDebug()<<"Clicked on "<<_column;
-            _comp->mark(_track,_column,ViewToModel);
+            _track->mark(_column);
         }
     }
 
@@ -80,7 +81,7 @@ public:
     {
         if(event->button() == Qt::RightButton)
         {
-            _comp->unmark(_track,_measure,ViewToModel);
+            _track->unmark(_measure);
             _comp->removeItem(this);
         }
     }
@@ -91,25 +92,15 @@ CompositionScene::CompositionScene(Composition *composition, QObject *parent) :
 {
     for(unsigned int i = 0; i < _composition->tracks().size(); ++i)
     {
-        addTrack(_composition->tracks().at(i),ModelToView);
+        addTrack(_composition->tracks().at(i));
     }
 }
 
-void CompositionScene::addTrack(Track *track, Direction dir)
+void CompositionScene::addTrack(Track *track)
 {
-    int i;
+    int i = trackRow(track);
 
-    if(dir == ModelToView)
-    {
-        i = trackRow(track);
-    }
-    else
-    {
-        _composition->addTrack(track);
-        i = _composition->tracks().size() - 1;
-    }
-
-    addItem(new ChunkHandle(track->chunk(),0,i*_edge_size,_handle_width,_edge_size));
+    addItem(new ChunkHandle(track,0,i*_edge_size,_handle_width,_edge_size));
 
     for(int j = 0; j < _columns; ++j)
     {
@@ -118,7 +109,7 @@ void CompositionScene::addTrack(Track *track, Direction dir)
 
     for(std::set<int>::const_iterator m = track->marks().begin(); m != track->marks().end(); ++m)
     {
-        mark(track,*m,ModelToView);
+        mark_view(track,*m);
     }
 
 }
@@ -135,22 +126,11 @@ int CompositionScene::trackRow(Track *track) const
     return -1;
 }
 
-void CompositionScene::mark(Track *track, int measure, Direction dir)
+void CompositionScene::mark_view(Track *track, int measure)
 {
     int i = trackRow(track);
     addItem(new Mark(this,track,measure,_handle_width+measure*_edge_size,i*_edge_size,_edge_size*track->chunk()->measures(),_edge_size));
-    if(dir == ViewToModel)
-    {
-        track->mark(measure);
-    }
-}
 
-void CompositionScene::unmark(Track *track, int measure, Direction dir)
-{
-    if(dir == ViewToModel)
-    {
-        track->unmark(measure);
-    }
 }
 
 Composition *CompositionScene::composition()

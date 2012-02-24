@@ -3,6 +3,8 @@
 
 #include "chunk.h"
 #include "compositionscene.h"
+#include "timingdescriptioneditor.h"
+#include "solfege.h"
 
 #include <QDrag>
 #include <QWheelEvent>
@@ -108,4 +110,16 @@ void ChunkViewControl::on_addMeasureButton_clicked()
 void ChunkViewControl::on_removeMeasureButton_clicked()
 {
     _chunk->removeMeasure();
+}
+
+void ChunkViewControl::on_timingButton_clicked()
+{
+    TimingDescription desc = _chunk->timingDescription();
+    TimingDescriptionEditor editor(&desc);
+    editor.exec();
+    if(editor.ok())
+    {
+        _chunk->setTimingDescription(desc);
+    }
+
 }

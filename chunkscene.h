@@ -5,10 +5,12 @@
 #include <QList>
 
 #include "util.h"
-#include "range.h"
+
 #include "solfege.h"
+//#include "chunk.h"
 
 class Chunk;
+class ChunkNote;
 class Cell;
 class Range;
 
@@ -58,7 +60,14 @@ public:
     QPoint topLeft(const QPoint & cell) const;
     QPoint bottomRight(const QPoint & cell) const;
 
-    void mark(int row, int from_column, int to_column, Direction dir);
+    //void mark_view(int row, int from_column, int to_column);
+    Range * mark_view(const ChunkNote & note);
+    void unmark_view(Range * range);
+
+    void mark_model(int row, int from_column, int to_column);
+    void unmark_model(const ChunkNote & note);
+
+    Chunk * chunk();
 
 signals:
     

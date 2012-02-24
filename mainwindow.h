@@ -15,8 +15,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     Composition * _composition;
-    CompositionScene * _comp;
-    
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();

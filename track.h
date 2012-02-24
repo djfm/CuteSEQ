@@ -2,25 +2,53 @@
 #define TRACK_H
 
 #include <set>
+#include <QObject>
+
+#include "solfege.h"
 
 class Chunk;
+class ChunkNote;
 class CompositionScene;
+class Composition;
 
-class Track
+class Track : public QObject
 {
-    CompositionScene * _comp = 0;
+    Q_OBJECT
+
+    friend class Chunk;
+
+    Composition *_composition;
     Chunk * _chunk = 0;
     std::set<int> _marks;
-public:
-    Track();
+
     void setChunk(Chunk * chunk);
-    void setComp(CompositionScene * comp);
+
+
+
+public:
+    Track(Composition * composition, QObject *parent = 0);
+
     Chunk * chunk();
     const std::set<int> & marks() const;
     void mark(int measure);
     void unmark(int measure);
 
     void reFit();
+
+    int msPosition(int mark);
+    Composition *composition();
+
+    void emitAdds();
+
+signals:
+
+    void noteAdded(Track * track, const PhysicalNote & note, int startMs, int endMs);
+    void noteRemoved(Track * track, const PhysicalNote & note, int startMs, int endMs);
+
+private slots:
+
+    void chunkNoteAdded(Chunk * c, const ChunkNote & note);
+    void chunkNoteRemoved(Chunk * c, const ChunkNote & note);
 
 };
 

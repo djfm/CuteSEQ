@@ -18,6 +18,23 @@ public:
     int id() const;
     int octave() const;
     const QString & name() const;
+    int abs() const;
+
+};
+
+class PhysicalNote : public Note
+{
+protected:
+
+    int _velocity;
+
+public:
+
+    PhysicalNote(const QString & name, int octave = 4);
+    PhysicalNote(int id, int octave = 4);
+
+    int velocity() const;
+    void setVelocity(int velocity);
 
 };
 
@@ -36,7 +53,14 @@ public:
     int beatsPerMeasure() const;
     int notesPerBeat() const;
 
+    int measure(int pos) const;
+    int beat(int pos) const;
+    int note(int pos) const;
+
     int columns(int measures = 1) const;
+
+    int ms (int pos, int measure_duration) const;
+    int pos(int ms , int measure_duration) const;
 
 
 };

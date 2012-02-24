@@ -101,7 +101,7 @@ ChunkScene::ChunkScene(int lower_octave, int upper_octave, int measures, const T
             BarLine * line = new BarLine(x,_y,x,_y+_h);
             addItem(line);
         }
-        else if (j % timing_description.beatsPerMeasure() == 0)
+        else if (j % timing_description.notesPerBeat() == 0)
         {
             BeatLine * line = new BeatLine(x,_y,x,_y+_h);
             addItem(line);
@@ -119,9 +119,10 @@ ChunkScene::ChunkScene(Chunk *chunk, QObject *parent) :
 {
     _chunk = chunk;
     _chunk->setScene(this);
-    for(Chunk::ChunkNotes::const_iterator n = chunk->notes().begin(); n != chunk->notes().end(); n++)
+    for(ChunkNotes::iterator n = chunk->notes().begin(); n != chunk->notes().end(); ++n)
     {
-        mark(row(n->id(),n->octave()),n->startPos(), n->endPos(),ModelToView);
+        //mark_view(row(n->id(),n->octave()),n->startPos(), n->endPos());
+        n->second = mark_view(n->first);
     }
 }
 
@@ -132,7 +133,7 @@ int ChunkScene::id(int row) const
 
 int ChunkScene::octave(int row) const
 {
-    return (_rows - row - 1)/12;
+    return _lower_octave + (_rows - row - 1)/12;
 }
 
 const QString &ChunkScene::noteName(int row) const
@@ -186,7 +187,7 @@ void ChunkScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         {
 
 
-            mark(from_cell.value().x(), from_cell.value().y(),to_cell.value().y(), ViewToModel);
+            mark_model(from_cell.value().x(), from_cell.value().y(),to_cell.value().y());
 
             to_cell.clear();
         }
@@ -236,6 +237,7 @@ void ChunkScene::eraseRange(Range *range)
 {
     removeItem(range);
     //ranges.removeAll(range);
+    //_chunk->
 }
 
 void ChunkScene::startDrag(const QPoint &pos)
@@ -257,24 +259,31 @@ QPoint ChunkScene::bottomRight(const QPoint &cell) const
     return topLeft(cell) + QPoint(_cell_w, _cell_h);
 }
 
-void ChunkScene::mark(int row, int from_column, int to_column, Direction dir)
+Range *ChunkScene::mark_view(const ChunkNote &note)
 {
-    QRectF rect = QRectF(topLeft(QPoint(row, from_column)),
-                         bottomRight(QPoint(row,to_column))
-                         );
 
-    qDebug()<<"Range : "<<rect;
-    Range * range = new Range(this, row,from_column,to_column,rect);
+    Range * range = new Range(this, note);
     //ranges.push_back(range);
     addItem(range);
-
-    if(dir == ViewToModel)
-    {
-        _chunk->addNote(Chunk::ChunkNote(id(row),from_column,to_column,100,octave(row)));
-    }
-
+    return range;
 }
 
+void ChunkScene::unmark_view(Range *range)
+{
+    removeItem(range);
+}
 
+void ChunkScene::mark_model(int row, int from_column, int to_column)
+{
+    _chunk->addNote(ChunkNote(id(row),from_column,to_column,100,octave(row)));
+}
 
+void ChunkScene::unmark_model(const ChunkNote &note)
+{
+    _chunk->removeNote(note);
+}
 
+Chunk *ChunkScene::chunk()
+{
+    return _chunk;
+}

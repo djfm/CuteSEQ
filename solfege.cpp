@@ -24,6 +24,11 @@ const QString &Note::name() const
     return NoteNames[_id];
 }
 
+int Note::abs() const
+{
+    return 12*_octave + _id;
+}
+
 TimingDescription::TimingDescription(int beats_per_measure, int notes_per_beat)
 {
     setBeatsPerMeasure(beats_per_measure);
@@ -55,4 +60,48 @@ int TimingDescription::columns(int measures) const
     return _notes_per_beat*_beats_per_measure*measures;
 }
 
+int TimingDescription::ms(int pos, int measure_duration) const
+{
+    return (measure_duration * pos) / columns(1);
+}
 
+int TimingDescription::pos(int ms, int measure_duration) const
+{
+    return (ms * columns(1)) / measure_duration;
+}
+
+int TimingDescription::measure(int pos) const
+{
+    return pos / columns(1);
+}
+
+int TimingDescription::beat(int pos) const
+{
+    return (pos % columns(1)) / notesPerBeat();
+}
+
+int TimingDescription::note(int pos) const
+{
+    return (pos % columns(1)) % notesPerBeat();
+}
+
+int PhysicalNote::velocity() const
+{
+    return _velocity;
+}
+
+void PhysicalNote::setVelocity(int velocity)
+{
+    _velocity = velocity;
+}
+
+
+PhysicalNote::PhysicalNote(const QString &name, int octave)
+    :Note(name,octave)
+{
+}
+
+PhysicalNote::PhysicalNote(int id, int octave)
+    :Note(id, octave)
+{
+}
