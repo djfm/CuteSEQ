@@ -29,6 +29,16 @@ int Note::abs() const
     return 12*_octave + _id;
 }
 
+bool Note::operator ==(const Note &other) const
+{
+    return other.id() == id() and other.octave() == octave();
+}
+
+bool Note::operator !=(const Note &other) const
+{
+    return not operator ==(other);
+}
+
 TimingDescription::TimingDescription(int beats_per_measure, int notes_per_beat)
 {
     setBeatsPerMeasure(beats_per_measure);
@@ -95,6 +105,16 @@ void PhysicalNote::setVelocity(int velocity)
     _velocity = velocity;
 }
 
+bool PhysicalNote::operator ==(const PhysicalNote &other) const
+{
+    return Note::operator ==((const Note &)other) and velocity() == other.velocity();
+}
+
+bool PhysicalNote::operator !=(const PhysicalNote &other) const
+{
+    return not operator==(other);
+}
+
 
 PhysicalNote::PhysicalNote(const QString &name, int octave)
     :Note(name,octave)
@@ -105,3 +125,6 @@ PhysicalNote::PhysicalNote(int id, int octave)
     :Note(id, octave)
 {
 }
+
+
+

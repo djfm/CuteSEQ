@@ -25,7 +25,10 @@ SOURCES += main.cpp\
     chunkviewcontrol.cpp \
     compositionscene.cpp \
     chunkscene.cpp \
-    timingdescriptioneditor.cpp
+    timingdescriptioneditor.cpp \
+    events.cpp \
+    jackpp.cpp \
+    midi.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
@@ -39,8 +42,13 @@ HEADERS  += mainwindow.h \
     chunkviewcontrol.h \
     chunkscene.h \
     compositionscene.h \
-    timingdescriptioneditor.h
+    timingdescriptioneditor.h \
+    events.h \
+    jackpp.h \
+    midi.h
 
 FORMS    += mainwindow.ui \
     chunkviewcontrol.ui \
     timingdescriptioneditor.ui
+
+LIBS += -ljack

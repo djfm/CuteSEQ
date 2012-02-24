@@ -39,6 +39,8 @@ public:
     Composition *composition();
 
     void emitAdds();
+    void emitAdds(int mark);
+    void emitRemoves(int mark);
 
 signals:
 

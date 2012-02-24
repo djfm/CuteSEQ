@@ -57,12 +57,15 @@ void Track::mark(int measure)
     {
         _composition->compositionScene()->mark_view(this,measure);
     }
+
+    emitAdds(measure);
 }
 
 void Track::unmark(int measure)
 {
     _marks.erase(measure);
     //FIXME : will not update view.
+    emitRemoves(measure);
 }
 
 void Track::reFit()
@@ -101,5 +104,25 @@ void Track::emitAdds()
     if(_chunk != 0)
     {
         _chunk->emitAdds();
+    }
+}
+
+void Track::emitAdds(int mark)
+{
+    for(const auto & p : _chunk->notes())
+    {
+        int startMs = _chunk->msPosition(mark,p.first.startPos());
+        int endMs   = _chunk->msPosition(mark,p.first.endPos()+1);
+        emit noteAdded(this,p.first,startMs,endMs);
+    }
+}
+
+void Track::emitRemoves(int mark)
+{
+    for(const auto & p : _chunk->notes())
+    {
+        int startMs = _chunk->msPosition(mark,p.first.startPos());
+        int endMs   = _chunk->msPosition(mark,p.first.endPos()+1);
+        emit noteRemoved(this,p.first,startMs,endMs);
     }
 }

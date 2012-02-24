@@ -2,6 +2,7 @@
 #define SOLFEGE_H
 
 #include <QString>
+#include <map>
 
 const QString NoteNames[12] = {"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
 
@@ -20,6 +21,9 @@ public:
     const QString & name() const;
     int abs() const;
 
+    bool operator==(const Note & other) const;
+    bool operator!=(const Note & other) const;
+
 };
 
 class PhysicalNote : public Note
@@ -35,6 +39,9 @@ public:
 
     int velocity() const;
     void setVelocity(int velocity);
+
+    bool operator==(const PhysicalNote & other) const;
+    bool operator!=(const PhysicalNote & other) const;
 
 };
 

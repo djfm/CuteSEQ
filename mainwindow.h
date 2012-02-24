@@ -25,6 +25,9 @@ public:
 public slots:
 
     void on_addTrackButton_clicked();
+    void on_playButton_clicked();
+    void on_pauseButton_clicked();
+    void on_stopButton_clicked();
 
 private:
     Ui::MainWindow *ui;

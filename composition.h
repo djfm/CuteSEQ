@@ -5,6 +5,11 @@
 #include <QObject>
 
 #include "track.h"
+#include "solfege.h"
+#include "events.h"
+#include "jackpp.h"
+
+extern JackPP jack;
 
 class Composition : public QObject
 {
@@ -16,6 +21,8 @@ class Composition : public QObject
 
     int _measure_duration = 4000;
     CompositionScene *_composition_scene = 0;
+
+    EventQueue * _queue;
 
     std::deque<Track*> _tracks;
 
@@ -31,10 +38,15 @@ public:
     CompositionScene * compositionScene(bool create = true);
     void recreateScene();
 
+    void play();
+    void pause();
+    void stop();
+
 private slots:
 
     void TrackNoteAdded(Track * track, const PhysicalNote & note, int startMs, int endMs);
     void TrackNoteRemoved(Track * track, const PhysicalNote & note, int startMs, int endMs);
+    void onQueueEventSent(Event * event);
 };
 
 #endif // COMPOSITION_H

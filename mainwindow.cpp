@@ -82,3 +82,18 @@ void MainWindow::on_addTrackButton_clicked()
     Track * track = new Track(_composition);
     Chunk * chunk = new Chunk(track);
 }
+
+void MainWindow::on_playButton_clicked()
+{
+    _composition->play();
+}
+
+void MainWindow::on_pauseButton_clicked()
+{
+    _composition->pause();
+}
+
+void MainWindow::on_stopButton_clicked()
+{
+    _composition->stop();
+}
