@@ -9,6 +9,11 @@ Note::Note(int id, int octave) : _id(id), _octave(octave)
 {
 }
 
+int Note::midi() const
+{
+    return abs()+12;
+}
+
 int Note::id() const
 {
     return _id;

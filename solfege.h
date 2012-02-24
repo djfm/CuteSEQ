@@ -16,6 +16,7 @@ public:
     Note(const QString & name, int octave = 4);
     Note(int id, int octave = 4);
 
+    int midi() const;
     int id() const;
     int octave() const;
     const QString & name() const;

@@ -2,6 +2,8 @@
 #define JACKPP_H
 
 #include <jack/jack.h>
+#include <jack/midiport.h>
+#include <jack/ringbuffer.h>
 
 #include "midi.h"
 
@@ -21,6 +23,8 @@ public:
 
     static JackPP * server();
 
+    void sendMidi(const Midi::message & msg);
+
 private:
     JackPP();
 
@@ -29,6 +33,8 @@ private:
     static JackPP * _server;
     jack_client_t * _client;
     jack_port_t   * _midi_out_port;
+
+    jack_ringbuffer_t * _midi_ring = 0;
 
     bool _ok = false;
 };

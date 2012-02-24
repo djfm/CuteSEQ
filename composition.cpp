@@ -102,4 +102,12 @@ void Composition::TrackNoteRemoved(Track *track, const PhysicalNote &note, int s
 void Composition::onQueueEventSent(Event *event)
 {
     std::cout<<"Got event (playing) at "<<event->time()<<std::endl;
+
+    if(event->type() == Event::NoteOn)
+    {
+        NoteEvent * ne = static_cast<NoteEvent*>(event);
+        Midi::message msg = Midi::noteOn(ne->note().midi(),ne->note().velocity());
+        JackPP::server()->sendMidi(msg);
+    }
+
 }
