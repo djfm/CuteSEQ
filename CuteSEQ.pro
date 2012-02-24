@@ -23,8 +23,9 @@ SOURCES += main.cpp\
     track.cpp \
     chunkview.cpp \
     chunkviewcontrol.cpp \
-    chunkscenescene.cpp \
-    compositionscene.cpp
+    compositionscene.cpp \
+    chunkscene.cpp \
+    timingdescriptioneditor.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
@@ -37,7 +38,9 @@ HEADERS  += mainwindow.h \
     chunkview.h \
     chunkviewcontrol.h \
     chunkscene.h \
-    compositionscene.h
+    compositionscene.h \
+    timingdescriptioneditor.h
 
 FORMS    += mainwindow.ui \
-    chunkviewcontrol.ui
+    chunkviewcontrol.ui \
+    timingdescriptioneditor.ui
