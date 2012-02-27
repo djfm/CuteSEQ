@@ -6,6 +6,7 @@ JackPP * JackPP::_server = 0;
 
 JackPP::JackPP()
 {
+
     if ((_client = jack_client_open("CuteSEQ",JackNullOption,NULL)) == 0)
     {
         std::cout << "jack server not running?" << std::endl;
@@ -58,16 +59,27 @@ JackPP *JackPP::server()
 
 void JackPP::sendMidi(const Midi::message &msg)
 {
-    /*
-    unsigned char buf[msg.size()]; for(int i = 0; i < msg.size(); i++)buf[i]=msg[i];
-    void * port_buffer = jack_port_get_buffer()
-    jack_midi_clear_buffer(_midi_out_port);
-    jack_midi_event_write(_midi_out_port,0,buf,msg.size());*/
     jack_ringbuffer_write(_midi_ring,&msg[0],msg.size());
 }
 
 int JackPP::process(jack_nframes_t nframes)
 {
-    std::cout<<"Process!"<<std::endl;
+    void * mout = jack_port_get_buffer(_midi_out_port,nframes);
+    jack_midi_clear_buffer(mout);
+
+    size_t avail = jack_ringbuffer_read_space(_midi_ring);
+
+    if(avail != 0)
+    {
+        std::cout<<"Got "<<avail<<" bytes of midi data."<<std::endl;
+        char arr[avail];
+        jack_ringbuffer_read(_midi_ring,arr,avail);
+        if(jack_midi_event_write(mout,jack_last_frame_time(_client),(unsigned char*)arr,avail) == 0)
+        {
+            std::cout<<"Midi Write Failed!"<<std::endl;
+        }
+    }
+
+    //std::cout<<"Process!"<<std::endl;
     return 0;
 }

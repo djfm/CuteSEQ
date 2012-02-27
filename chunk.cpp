@@ -69,7 +69,7 @@ void Chunk::addNote(const ChunkNote &note)
         range = _scene->mark_view(note);
     }
 
-    _notes.insert({note,range});
+    _notes.insert(std::make_pair(note,range));
 
     emit(noteAdded(this,note));
 

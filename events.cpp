@@ -54,7 +54,7 @@ EventQueue::EventQueue(QObject *parent)
 
 void EventQueue::add(Event *event)
 {
-    _queue.insert({event->time(),event});
+    _queue.insert(std::make_pair(event->time(),event));
 }
 
 void EventQueue::remove(Event *event, bool andDelete)
