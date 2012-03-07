@@ -24,7 +24,7 @@ The software will rely extensively on QGraphicsView for display and score-editin
     - try to keep a clean API for ease of extension
     - should have most functionality available outside the GUI
     - I want this to work soon, I don't need the sourcecode to be a work of high literary art
-    - contributions highly welcome, commit policy will be rather souple
+    - contributions highly welcome
 
 °°Compiling :
 
