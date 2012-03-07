@@ -28,5 +28,6 @@ The software will rely extensively on QGraphicsView for display and score-editin
 
 °°Compiling :
 
-For now, since there is not much functionality yet, you will just need a recent Qt (I use 4.8) 
-and a C++ compiler that has reasonable support of C++11 (at the moment I'm using the latest clang).
+You will need a recent Qt (I use 4.8) 
+and a C++ compiler that has reasonable support of C++11 (at the moment I'm using the latest clang) 
++ jack libraries + alsa libraries
