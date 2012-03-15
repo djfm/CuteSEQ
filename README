@@ -4,7 +4,7 @@ The software will rely extensively on QGraphicsView for display and score-editin
 
 °°Status :
 
-  Currently, I have got basic GUI up and running, but no functionality :)
+  Currently, I have got basic GUI up and running and basic midi playback too!
 
 °°Plans include :
 
@@ -24,9 +24,10 @@ The software will rely extensively on QGraphicsView for display and score-editin
     - try to keep a clean API for ease of extension
     - should have most functionality available outside the GUI
     - I want this to work soon, I don't need the sourcecode to be a work of high literary art
-    - contributions highly welcome, commit policy will be rather souple
+    - contributions highly welcome
 
 °°Compiling :
 
-For now, since there is not much functionality yet, you will just need a recent Qt (I use 4.8) 
-and a C++ compiler that has reasonable support of C++11 (at the moment I'm using the latest clang).
+You will need a recent Qt (I use 4.8) 
+and a C++ compiler that has reasonable support of C++11 (at the moment I'm using the latest clang) 
++ jack libraries + alsa libraries
