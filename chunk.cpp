@@ -205,7 +205,7 @@ void Chunk::updateViews()
 
 int Chunk::msPosition(int mark, int pos) const
 {
-    return _timing_description.ms(mark*_measures+pos,_track->composition()->measureDuration());
+    return _timing_description.ms(mark,pos,_track->composition()->measureDuration());
 }
 
 void Chunk::setTimingDescription(const TimingDescription &timing_description)
@@ -245,6 +245,11 @@ void Chunk::emitAdds()
     {
         emit noteAdded(this,n.first);
     }
+}
+
+Track *Chunk::track()
+{
+    return _track;
 }
 
 ChunkNote::ChunkNote(const QString &name, int start_pos, int end_pos, int velocity, int octave)

@@ -8,4 +8,5 @@ PosBar::PosBar() :
 {
     QBrush brush(QColor(0,0,255,127));
     setBrush(brush);
+    setZValue(1);
 }

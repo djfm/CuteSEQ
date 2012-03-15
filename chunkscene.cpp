@@ -7,6 +7,9 @@
 #include "solfege.h"
 #include "range.h"
 #include "chunk.h"
+#include "posbar.h"
+#include "track.h"
+#include "composition.h"
 
 #include <QtGui>
 
@@ -124,6 +127,10 @@ ChunkScene::ChunkScene(Chunk *chunk, QObject *parent) :
         //mark_view(row(n->id(),n->octave()),n->startPos(), n->endPos());
         n->second = mark_view(n->first);
     }
+    _pos_bar = new PosBar();
+    QRectF r(0,0,_cell_w/2,_cell_h * _rows);
+    _pos_bar->setRect(r);
+    addItem(_pos_bar);
 }
 
 int ChunkScene::id(int row) const
@@ -281,6 +288,14 @@ void ChunkScene::mark_model(int row, int from_column, int to_column)
 void ChunkScene::unmark_model(const ChunkNote &note)
 {
     _chunk->removeNote(note);
+}
+
+void ChunkScene::moveBarToMs(int ms)
+{
+    float percent = ((float)(ms))/((float)(_chunk->measures() * _chunk->track()->composition()->measureDuration()));
+    //qDebug()<<"Percent : "<<percent;
+    float x = percent * _w;
+    _pos_bar->setPos(x,0);
 }
 
 Chunk *ChunkScene::chunk()

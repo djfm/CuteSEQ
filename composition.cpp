@@ -71,6 +71,11 @@ void Composition::stop()
     _queue->stop();
 }
 
+EventQueue *Composition::queue()
+{
+    return _queue;
+}
+
 void Composition::TrackNoteAdded(Track *track, const PhysicalNote &note, int startMs, int endMs)
 {
     qDebug()<<"Added note at "<<startMs<<" till "<<endMs;
@@ -101,13 +106,21 @@ void Composition::TrackNoteRemoved(Track *track, const PhysicalNote &note, int s
 
 void Composition::onQueueEventSent(Event *event)
 {
-    std::cout<<"Got event (playing) at "<<event->time()<<std::endl;
-
     if(event->type() == Event::NoteOn)
     {
         NoteEvent * ne = static_cast<NoteEvent*>(event);
-        Midi::message msg = Midi::noteOn(ne->note().midi(),ne->note().velocity());
-        JackPP::server()->sendMidi(msg);
+        std::cout<<"Got NoteOn at "<<event->time()<<" vel : "<<ne->note().velocity()<<" note : "<<ne->note().midi()<<std::endl;
+        //Midi::message msg = Midi::noteOn(ne->note().midi(),ne->note().velocity());
+        //JackPP::server()->sendMidi(msg);
+        AlsaPP::server()->sendNoteOn(1,ne->note().midi(),ne->note().velocity());
+    }
+    else if(event->type() == Event::NoteOff)
+    {
+        std::cout<<"Got NoteOff at "<<event->time()<<std::endl;
+        NoteEvent * ne = static_cast<NoteEvent*>(event);
+        //Midi::message msg = Midi::noteOn(ne->note().midi(),ne->note().velocity());
+        //JackPP::server()->sendMidi(msg);
+        AlsaPP::server()->sendNoteOff(1,ne->note().midi(),ne->note().velocity());
     }
 
 }

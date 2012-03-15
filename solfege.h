@@ -67,8 +67,8 @@ public:
 
     int columns(int measures = 1) const;
 
-    int ms (int pos, int measure_duration) const;
-    int pos(int ms , int measure_duration) const;
+    int ms (int mark, int pos, int measure_duration) const;
+
 
 
 };

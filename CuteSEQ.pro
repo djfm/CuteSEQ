@@ -28,7 +28,10 @@ SOURCES += main.cpp\
     timingdescriptioneditor.cpp \
     events.cpp \
     jackpp.cpp \
-    midi.cpp
+    midi.cpp \
+    alsapp.cpp \
+    chronometre.cpp \
+    posbar.cpp
 
 HEADERS  += mainwindow.h \
     cell.h \
@@ -45,10 +48,13 @@ HEADERS  += mainwindow.h \
     timingdescriptioneditor.h \
     events.h \
     jackpp.h \
-    midi.h
+    midi.h \
+    alsapp.h \
+    chronometre.h \
+    posbar.h
 
 FORMS    += mainwindow.ui \
     chunkviewcontrol.ui \
     timingdescriptioneditor.ui
 
-LIBS += -ljack
+LIBS += -ljack -lasound

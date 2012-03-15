@@ -47,6 +47,7 @@ const PhysicalNote &NoteEvent::note() const
 EventQueue::EventQueue(QObject *parent)
     :QObject(parent)
 {
+    _chronometre =  new Chronometre((int)(1000.0/25),this);
     _timer = new QTimer(this);
     _timer->setSingleShot(true);
     connect(_timer,SIGNAL(timeout()),this,SLOT(play()));
@@ -84,6 +85,8 @@ void EventQueue::show()
 
 void EventQueue::play()
 {
+    if(!_chronometre->running())_chronometre->start();
+
     auto head = _queue.find(_current_pos);
     if(head != _queue.end())
     {
@@ -105,9 +108,21 @@ void EventQueue::play()
 
 void EventQueue::pause()
 {
+    _chronometre->pause();
 }
 
 void EventQueue::stop()
 {
     _current_pos = 0;
+    _chronometre->stop();
+}
+
+int EventQueue::elapsed()
+{
+    return _chronometre->elapsed();
+}
+
+Chronometre *EventQueue::chronometre()
+{
+    return _chronometre;
 }

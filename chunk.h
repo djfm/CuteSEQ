@@ -86,6 +86,8 @@ public:
 
     void emitAdds();
 
+    Track * track();
+
 signals:
 
     void descriptionChanged();

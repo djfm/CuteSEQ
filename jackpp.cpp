@@ -1,8 +1,15 @@
 #include "jackpp.h"
 
+#include <cerrno>
+
 #include <iostream>
 
 JackPP * JackPP::_server = 0;
+
+void errf(const char * msg)
+{
+    std::cerr<<"Jack error'd : "<<msg<<std::endl;
+}
 
 JackPP::JackPP()
 {
@@ -19,6 +26,7 @@ JackPP::JackPP()
         }
         else
         {
+            jack_set_error_function(errf);
             jack_set_process_callback(_client,staticProcess,this);
             if(jack_activate(_client) != 0)
             {
@@ -69,14 +77,18 @@ int JackPP::process(jack_nframes_t nframes)
 
     size_t avail = jack_ringbuffer_read_space(_midi_ring);
 
+    int t = jack_last_frame_time(_client);
+
     if(avail != 0)
     {
         std::cout<<"Got "<<avail<<" bytes of midi data."<<std::endl;
         char arr[avail];
         jack_ringbuffer_read(_midi_ring,arr,avail);
-        if(jack_midi_event_write(mout,jack_last_frame_time(_client),(unsigned char*)arr,avail) == 0)
+        int err;
+        if((err = jack_midi_event_write(mout,t,(unsigned char*)arr,avail)) != 0)
         {
-            std::cout<<"Midi Write Failed!"<<std::endl;
+            std::cout<<"Midi Write Failed! ("<<err<<")"<<std::endl;
+            if(err == ENOBUFS)std::cout<<"ENOBUFS"<<std::endl;
         }
     }
 

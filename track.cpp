@@ -5,6 +5,7 @@
 #include "compositionscene.h"
 
 #include <QGraphicsView>
+#include <QDebug>
 
 Track::Track(Composition *composition, QObject *parent)
     :QObject(parent), _composition(composition)
@@ -52,6 +53,7 @@ const std::set<int> &Track::marks() const
 
 void Track::mark(int measure)
 {
+    qDebug()<<"Marked measure "<<measure;
     _marks.insert(measure);
     if(_composition->compositionScene(false))
     {
@@ -109,20 +111,22 @@ void Track::emitAdds()
 
 void Track::emitAdds(int mark)
 {
+    qDebug()<<"Emitting adds for mark "<<mark;
     for(const auto & p : _chunk->notes())
     {
-        int startMs = _chunk->msPosition(mark,p.first.startPos());
-        int endMs   = _chunk->msPosition(mark,p.first.endPos()+1);
+        int startMs = _chunk->msPosition(mark/**_chunk->measures()*/,p.first.startPos());
+        int endMs   = _chunk->msPosition(mark/**_chunk->measures()*/,p.first.endPos()+1);
         emit noteAdded(this,p.first,startMs,endMs);
     }
 }
 
 void Track::emitRemoves(int mark)
 {
+    qDebug()<<"Emitting removes for mark "<<mark;
     for(const auto & p : _chunk->notes())
     {
-        int startMs = _chunk->msPosition(mark,p.first.startPos());
-        int endMs   = _chunk->msPosition(mark,p.first.endPos()+1);
+        int startMs = _chunk->msPosition(mark/**_chunk->measures()*/,p.first.startPos());
+        int endMs   = _chunk->msPosition(mark/**_chunk->measures()*/,p.first.endPos()+1);
         emit noteRemoved(this,p.first,startMs,endMs);
     }
 }

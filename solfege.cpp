@@ -75,15 +75,11 @@ int TimingDescription::columns(int measures) const
     return _notes_per_beat*_beats_per_measure*measures;
 }
 
-int TimingDescription::ms(int pos, int measure_duration) const
+int TimingDescription::ms(int mark, int pos, int measure_duration) const
 {
-    return (measure_duration * pos) / columns(1);
+    return (mark + (float)pos / columns()) * measure_duration;
 }
 
-int TimingDescription::pos(int ms, int measure_duration) const
-{
-    return (ms * columns(1)) / measure_duration;
-}
 
 int TimingDescription::measure(int pos) const
 {

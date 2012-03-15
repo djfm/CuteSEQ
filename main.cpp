@@ -2,6 +2,7 @@
 
 #include "mainwindow.h"
 #include "jackpp.h"
+#include "alsapp.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,7 +10,8 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    JackPP::server();
+    //JackPP::server();
+    AlsaPP::server();
     
     return a.exec();
 }

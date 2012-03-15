@@ -8,6 +8,8 @@
 #include "solfege.h"
 #include "events.h"
 #include "jackpp.h"
+#include "alsapp.h"
+
 
 extern JackPP jack;
 
@@ -41,6 +43,8 @@ public:
     void play();
     void pause();
     void stop();
+
+    EventQueue * queue();
 
 private slots:
 

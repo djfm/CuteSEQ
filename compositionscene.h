@@ -5,6 +5,7 @@
 #include <QMimeData>
 
 #include "util.h"
+#include "posbar.h"
 
 class Composition;
 
@@ -36,6 +37,8 @@ class CompositionScene : public QGraphicsScene
     int _handle_width = 50;
     int _columns = 100;
 
+    PosBar * _posbar = 0;
+
 public:
     explicit CompositionScene(Composition * composition, QObject *parent = 0);
 
@@ -49,6 +52,8 @@ public:
 signals:
     
 public slots:
+
+    void ticked(int elapsed);
     
 };
 

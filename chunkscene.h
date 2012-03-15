@@ -13,6 +13,7 @@ class Chunk;
 class ChunkNote;
 class Cell;
 class Range;
+class PosBar;
 
 class ChunkScene : public QGraphicsScene
 {
@@ -36,6 +37,7 @@ class ChunkScene : public QGraphicsScene
 
     QGraphicsItem * temp_item;
     Chunk *_chunk;
+    PosBar *_pos_bar;
 
     explicit ChunkScene(int lower_octave, int upper_octave, int measures, const TimingDescription & timing_description, QObject *parent = 0);
 
@@ -66,6 +68,8 @@ public:
 
     void mark_model(int row, int from_column, int to_column);
     void unmark_model(const ChunkNote & note);
+
+    void moveBarToMs(int ms);
 
     Chunk * chunk();
 

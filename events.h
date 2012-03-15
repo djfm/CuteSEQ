@@ -2,9 +2,13 @@
 #define EVENTS_H
 
 #include "solfege.h"
+#include "chronometre.h"
+
 #include <map>
 #include <QObject>
 #include <QTimer>
+
+class Composition;
 
 class Event
 {
@@ -39,6 +43,8 @@ class EventQueue :  public QObject
 
     QTimer * _timer = 0;
 
+    Chronometre * _chronometre;
+
 public:
 
     EventQueue(QObject * parent = 0);
@@ -51,6 +57,10 @@ public:
 
     void pause();
     void stop();
+
+    int elapsed();
+
+    Chronometre * chronometre();
 
 public slots:
 

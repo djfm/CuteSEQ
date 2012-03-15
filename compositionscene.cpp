@@ -8,6 +8,9 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QDrag>
 #include <QtCore>
+#include <QGraphicsView>
+
+#include <algorithm>
 
 class ChunkHandle : public QGraphicsRectItem
 {
@@ -94,6 +97,13 @@ CompositionScene::CompositionScene(Composition *composition, QObject *parent) :
     {
         addTrack(_composition->tracks().at(i));
     }
+
+    _posbar = new PosBar();
+    _posbar->setRect(_handle_width,0,5,_edge_size * _composition->tracks().size());
+    addItem(_posbar);
+
+    connect(_composition->queue()->chronometre(),SIGNAL(tick(int)),this,SLOT(ticked(int)));
+
 }
 
 void CompositionScene::addTrack(Track *track)
@@ -110,6 +120,13 @@ void CompositionScene::addTrack(Track *track)
     for(std::set<int>::const_iterator m = track->marks().begin(); m != track->marks().end(); ++m)
     {
         mark_view(track,*m);
+    }
+
+    if(_posbar != 0)
+    {
+        QRectF r = _posbar->rect();
+        r.setHeight(r.height()+_edge_size);
+        _posbar->setRect(r);
     }
 
 }
@@ -136,4 +153,63 @@ void CompositionScene::mark_view(Track *track, int measure)
 Composition *CompositionScene::composition()
 {
     return _composition;
+}
+
+void CompositionScene::ticked(int elapsed)
+{
+    static int last_m = -1;
+    static int last_mark = -1;
+    float x = ((float)(elapsed * _edge_size)) / _composition->measureDuration();
+    //qDebug()<<"Elapsed : "<<elapsed<<" X : "<<x;
+    _posbar->setPos(x,0);
+    /*for(QGraphicsView *view : views())
+    {
+        view->update(view->rect());
+    }*/
+    update(this->sceneRect());
+    //qDebug()<<"Head at "<<elapsed;
+
+    for(Track * track : _composition->tracks())
+    {
+        if(!track->marks().empty())
+        {
+            int m = elapsed / (_composition->measureDuration());
+            std::set<int>::const_iterator i = track->marks().lower_bound(m);
+
+            if(m != last_m)//measure just changed
+            {
+                last_m = m;
+                qDebug()<<"M is "<<m;
+                qDebug()<<"Bound is "<<*i;
+            }
+
+            auto inMark = [m, track](int pos)
+            {
+                return m >= pos and m < pos + track->chunk()->measures();
+            };
+
+            int mark = -1;
+            if(i != track->marks().end())
+            {
+                if(inMark(*i))mark=*i;
+            }
+            if(mark == -1 and i != track->marks().begin())
+            {
+                if(inMark(*--i))
+                {
+                    mark=*i;
+                }
+            }
+
+            if(mark != -1)
+            {
+                int rel_ms = elapsed - mark * _composition->measureDuration();
+                if(track->chunk()->scene() != 0)
+                {
+                    track->chunk()->scene()->moveBarToMs(rel_ms);
+                }
+            }
+        }
+    }
+
 }
